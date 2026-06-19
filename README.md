@@ -18,9 +18,9 @@ The add-on is standalone: Home Assistant Supervisor builds it locally from this 
 
 ## Repository Pieces
 
-- `addons/gwm_ora`: Home Assistant add-on metadata, docs, and container packaging.
-- `src/GwmOra.Addon`: .NET add-on service.
-- `src/LibGwmApi`: adapted reusable GWM API client.
+- `addons/gwm_ora`: Home Assistant add-on metadata, docs, Dockerfile, and .NET add-on source.
+- `addons/gwm_ora/src/GwmOra.Addon`: .NET add-on service.
+- `addons/gwm_ora/src/LibGwmApi`: adapted reusable GWM API client.
 - `custom_components/gwm_ora`: Home Assistant custom integration.
 - `brand`: project brand images used by the README, add-on, and integration.
 
@@ -283,10 +283,10 @@ python -m compileall custom_components tests/python
 python -m pytest tests/python
 ```
 
-Build the add-on image from the repository root:
+To test the same build context Home Assistant Supervisor uses:
 
 ```powershell
-docker build -f addons/gwm_ora/Dockerfile .
+docker build -f addons/gwm_ora/Dockerfile addons/gwm_ora
 ```
 
 ## Releases

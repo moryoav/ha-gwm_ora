@@ -6,6 +6,13 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-06-19
+
+### Fixed
+
+- Fixed Supervisor local add-on builds by moving the .NET add-on source and OpenSSL configuration into `addons/gwm_ora`, which is the actual Docker build context used by Home Assistant Supervisor.
+- Updated the add-on build CI workflow to use the same `addons/gwm_ora` Docker context as Supervisor.
+
 ## [0.2.3] - 2026-06-19
 
 ### Fixed

@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibGwmApi", "src\LibGwmApi\LibGwmApi.csproj", "{40F82C52-4F35-41F6-99B4-482982D82328}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibGwmApi", "addons\gwm_ora\src\LibGwmApi\LibGwmApi.csproj", "{40F82C52-4F35-41F6-99B4-482982D82328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GwmOra.Addon", "src\GwmOra.Addon\GwmOra.Addon.csproj", "{D52935DB-A8E3-4967-9888-BB03C1AB77D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GwmOra.Addon", "addons\gwm_ora\src\GwmOra.Addon\GwmOra.Addon.csproj", "{D52935DB-A8E3-4967-9888-BB03C1AB77D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GwmOra.Addon.Tests", "tests\GwmOra.Addon.Tests\GwmOra.Addon.Tests.csproj", "{8F0F38E5-F30D-4869-9D91-3D2EA7A661F7}"
 EndProject

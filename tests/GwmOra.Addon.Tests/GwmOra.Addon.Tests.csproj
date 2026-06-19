@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\GwmOra.Addon\GwmOra.Addon.csproj" />
+    <ProjectReference Include="..\..\addons\gwm_ora\src\GwmOra.Addon\GwmOra.Addon.csproj" />
   </ItemGroup>
 
 </Project>

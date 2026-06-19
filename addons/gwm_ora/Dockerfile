@@ -3,7 +3,6 @@
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
 
-COPY GwmOra.sln ./
 COPY src/LibGwmApi/LibGwmApi.csproj src/LibGwmApi/
 COPY src/GwmOra.Addon/GwmOra.Addon.csproj src/GwmOra.Addon/
 RUN dotnet restore src/GwmOra.Addon/GwmOra.Addon.csproj

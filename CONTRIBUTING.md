@@ -55,9 +55,9 @@ cd ha-gwm_ora
 The repository layout is:
 
 ```text
-addons/gwm_ora/                 Home Assistant add-on metadata and container packaging
-src/GwmOra.Addon/               .NET add-on service
-src/LibGwmApi/                  GWM API client adapted from ora2mqtt behavior
+addons/gwm_ora/                 Home Assistant add-on metadata, container packaging, and source
+addons/gwm_ora/src/GwmOra.Addon/ .NET add-on service
+addons/gwm_ora/src/LibGwmApi/   GWM API client adapted from ora2mqtt behavior
 custom_components/gwm_ora/      Home Assistant custom integration
 tests/                          .NET and Python tests
 .github/workflows/              CI and release workflows
