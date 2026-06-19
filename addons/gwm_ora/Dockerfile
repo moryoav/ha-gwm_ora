@@ -23,7 +23,7 @@ LABEL \
     io.hass.arch=${BUILD_ARCH}
 
 COPY openssl.cnf /app/openssl.cnf
-COPY src/LibGwmApi/Resources/gwm_root.pem /etc/ssl/certs/gwm_root.pem
+COPY --from=build /src/src/LibGwmApi/Resources/gwm_root.pem /etc/ssl/certs/gwm_root.pem
 COPY --from=build /app/publish ./
 
 ENV ASPNETCORE_URLS=http://0.0.0.0:8099

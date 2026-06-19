@@ -6,6 +6,16 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-06-19
+
+### Fixed
+
+- Fixed Supervisor local add-on builds by copying `gwm_root.pem` from the Docker build stage instead of reading it again from the source context in the runtime stage.
+
+### Added
+
+- Added a non-publishing multi-architecture add-on Docker build check in CI.
+
 ## [0.2.2] - 2026-06-19
 
 ### Fixed
