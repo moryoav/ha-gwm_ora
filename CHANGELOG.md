@@ -6,6 +6,13 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-06-19
+
+### Fixed
+
+- Corrected the maintainer name to Yoav Mor in repository metadata and license text.
+- Removed the stale README image-workflow badge after switching the add-on to local Supervisor builds.
+
 ## [0.2.1] - 2026-06-19
 
 ### Changed

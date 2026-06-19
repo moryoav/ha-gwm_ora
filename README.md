@@ -1,5 +1,5 @@
 # GWM ORA for Home Assistant
-[![HACS][hacs-badge]][hacs-url] [![release][release-badge]][release-url] ![downloads][downloads-badge] [![.NET][dotnet-badge]][dotnet-url] [![Python][python-badge]][python-url] [![images][images-badge]][images-url] [![license][license-badge]][license-url]
+[![HACS][hacs-badge]][hacs-url] [![release][release-badge]][release-url] ![downloads][downloads-badge] [![.NET][dotnet-badge]][dotnet-url] [![Python][python-badge]][python-url] [![license][license-badge]][license-url]
 
 ![GWM ORA][banner]
 
@@ -309,7 +309,5 @@ Use at your own risk. You are responsible for validating behavior, protecting cr
 [dotnet-url]: https://github.com/moryoav/ha-gwm_ora/actions/workflows/dotnet.yml
 [python-badge]: https://img.shields.io/github/actions/workflow/status/moryoav/ha-gwm_ora/python.yml?branch=main&style=flat-square&label=Python
 [python-url]: https://github.com/moryoav/ha-gwm_ora/actions/workflows/python.yml
-[images-badge]: https://img.shields.io/github/actions/workflow/status/moryoav/ha-gwm_ora/docker.yml?branch=main&style=flat-square&label=Images
-[images-url]: https://github.com/moryoav/ha-gwm_ora/actions/workflows/docker.yml
 [license-badge]: https://img.shields.io/github/license/moryoav/ha-gwm_ora?style=flat-square
 [license-url]: https://github.com/moryoav/ha-gwm_ora/blob/main/LICENSE
