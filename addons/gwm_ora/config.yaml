@@ -1,5 +1,5 @@
 name: GWM ORA
-version: "0.2.6"
+version: "0.2.7"
 slug: gwm_ora
 description: Native Home Assistant add-on for GWM ORA vehicles
 url: https://github.com/moryoav/ha-gwm_ora
@@ -13,6 +13,10 @@ init: false
 hassio_api: true
 discovery:
   - gwm_ora
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:car-electric
+panel_title: GWM ORA
 ports:
   8099/tcp: null
 ports_description:

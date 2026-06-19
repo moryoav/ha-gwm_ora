@@ -33,6 +33,8 @@ The packaged add-on follows a conservative shape:
 - No Docker API access.
 - No `full_access`.
 - Token-protected internal API.
+- Home Assistant Ingress web UI, restricted to the Supervisor ingress proxy.
+- Custom AppArmor profile.
 - GWM username, password, refresh tokens, and security PIN stay in add-on configuration/storage.
 - Remote commands are disabled by default and require both `enable_remote_commands: true` and `security_pin`.
 
@@ -88,6 +90,8 @@ security_pin: "123456"
 ```
 
 If GWM requires SMS or e-mail verification, the add-on will request a one-time code and report `verification_required` in its health state. Enter the received code in the optional `verification_code` add-on option, save, and restart the add-on. After successful login, the add-on stores GWM tokens under `/data` and tries to clear `verification_code` from the add-on options.
+
+The add-on also provides an **Open Web UI** button through Home Assistant Ingress. It shows current add-on health and the latest cached vehicle summary; remote controls stay in the native Home Assistant integration.
 
 ### 3. Install the Custom Integration
 
@@ -291,6 +295,8 @@ docker build -f addons/gwm_ora/Dockerfile addons/gwm_ora
 ## Releases
 
 HACS uses GitHub releases for version detection. For every version, update `CHANGELOG.md`, `addons/gwm_ora/config.yaml`, and `custom_components/gwm_ora/manifest.json`, then push a `vX.Y.Z` tag. The release workflow creates the GitHub release from the matching changelog section.
+
+This repository publishes stable releases only for now; no canary branch is offered.
 
 ## Disclaimer
 

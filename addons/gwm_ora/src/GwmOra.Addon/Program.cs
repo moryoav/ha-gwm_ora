@@ -1,6 +1,7 @@
 using System.Text.Json;
 using GwmOra.Addon.Configuration;
 using GwmOra.Addon.Gwm;
+using GwmOra.Addon.Ingress;
 using GwmOra.Addon.Models;
 using GwmOra.Addon.RemoteCommands;
 using GwmOra.Addon.Supervisor;
@@ -46,6 +47,12 @@ app.Use(async (context, next) =>
             await context.Response.WriteAsJsonAsync(new { error = "unauthorized" });
             return;
         }
+    }
+    else if (!IngressAccess.IsAllowed(context))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Ingress access is only allowed through Home Assistant.");
+        return;
     }
 
     await next();
@@ -120,6 +127,6 @@ api.MapPost("/vehicles/{vin}/commands/windows/close", (string vin, RemoteCommand
     }
 });
 
-app.MapGet("/", () => Results.Ok(new { name = "GWM ORA add-on", api = "/api/v1" }));
+app.MapGet("/", (GwmVehicleService vehicles) => IngressPage.Render(vehicles));
 
 await app.RunAsync();

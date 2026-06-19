@@ -6,6 +6,17 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-06-19
+
+### Added
+
+- Added Home Assistant Ingress support with a small authenticated add-on status page.
+- Added a custom AppArmor profile for the add-on container.
+
+### Changed
+
+- Documented the add-on presentation/security posture in line with the Home Assistant app presentation guide.
+
 ## [0.2.6] - 2026-06-19
 
 ### Added
