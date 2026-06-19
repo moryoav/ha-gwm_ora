@@ -6,6 +6,12 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.8] - 2026-06-19
+
+### Added
+
+- Added a startup log line with the running add-on version and architecture to make stale Home Assistant Docker builds easy to identify.
+
 ## [0.2.7] - 2026-06-19
 
 ### Added

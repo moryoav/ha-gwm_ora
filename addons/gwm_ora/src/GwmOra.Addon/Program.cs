@@ -34,6 +34,9 @@ builder.Services.AddHostedService<VehiclePollingWorker>();
 builder.Services.AddHostedService<SupervisorDiscoveryWorker>();
 
 var app = builder.Build();
+var addonVersion = Environment.GetEnvironmentVariable("GWM_ORA_ADDON_VERSION") ?? "dev";
+var addonArch = Environment.GetEnvironmentVariable("GWM_ORA_ADDON_ARCH") ?? "unknown";
+app.Logger.LogInformation("GWM ORA add-on {Version} starting on {Architecture}", addonVersion, addonArch);
 
 app.Use(async (context, next) =>
 {

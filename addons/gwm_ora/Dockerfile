@@ -26,6 +26,8 @@ COPY --from=build /src/src/LibGwmApi/Resources/gwm_root.pem /etc/ssl/certs/gwm_r
 COPY --from=build /app/publish ./
 
 ENV ASPNETCORE_HTTP_PORTS=8099
+ENV GWM_ORA_ADDON_VERSION=${BUILD_VERSION}
+ENV GWM_ORA_ADDON_ARCH=${BUILD_ARCH}
 ENV OPENSSL_CONF=/app/openssl.cnf
 
 EXPOSE 8099
