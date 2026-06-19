@@ -6,6 +6,13 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-19
+
+### Changed
+
+- Removed GHCR image publishing and the add-on `image` setting so Home Assistant Supervisor builds the standalone add-on locally from the repository Dockerfile.
+- Added Home Assistant local-build labels to the add-on Dockerfile.
+
 ## [0.2.0] - 2026-06-19
 
 ### Added

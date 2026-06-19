@@ -13,7 +13,14 @@ COPY src/GwmOra.Addon/ src/GwmOra.Addon/
 RUN dotnet publish src/GwmOra.Addon/GwmOra.Addon.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
+ARG BUILD_VERSION=dev
+ARG BUILD_ARCH=amd64
 WORKDIR /app
+
+LABEL \
+    io.hass.version=${BUILD_VERSION} \
+    io.hass.type="app" \
+    io.hass.arch=${BUILD_ARCH}
 
 COPY openssl.cnf /app/openssl.cnf
 COPY src/LibGwmApi/Resources/gwm_root.pem /etc/ssl/certs/gwm_root.pem

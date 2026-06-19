@@ -1,5 +1,5 @@
 name: GWM ORA
-version: "0.2.0"
+version: "0.2.1"
 slug: gwm_ora
 description: Native Home Assistant add-on for GWM ORA vehicles
 url: https://github.com/moryoav/ha-gwm_ora
@@ -11,7 +11,6 @@ startup: services
 boot: auto
 init: false
 hassio_api: true
-image: ghcr.io/moryoav/ha-gwm-ora-{arch}
 ports:
   8099/tcp: null
 ports_description:

@@ -5,6 +5,8 @@
 
 Native Home Assistant add-on and custom integration for GWM ORA vehicles. The add-on owns GWM login, token storage, cloud polling, and remote commands; the integration exposes polished native Home Assistant entities without MQTT.
 
+The add-on is standalone: Home Assistant Supervisor builds it locally from this repository's Dockerfile. No GHCR-published image is required.
+
 ## What It Does
 
 - Polls the GWM cloud from a Home Assistant add-on.
@@ -38,11 +40,13 @@ Remote commands can affect the real vehicle. Test carefully and use a dedicated/
 
 ## Supported Architectures
 
-Prebuilt add-on images are published for:
+The add-on declares support for:
 
 - `amd64`
 - `aarch64`
 - `armv7`
+
+Because the add-on is built locally by Supervisor, installation can take longer than a prebuilt image download.
 
 ## Installation
 
@@ -288,18 +292,6 @@ docker build -f addons/gwm_ora/Dockerfile .
 ## Releases
 
 HACS uses GitHub releases for version detection. For every version, update `CHANGELOG.md`, `addons/gwm_ora/config.yaml`, and `custom_components/gwm_ora/manifest.json`, then push a `vX.Y.Z` tag. The release workflow creates the GitHub release from the matching changelog section.
-
-## Publishing Images
-
-GitHub Actions builds and publishes architecture-specific images to GitHub Container Registry:
-
-```text
-ghcr.io/moryoav/ha-gwm-ora-amd64
-ghcr.io/moryoav/ha-gwm-ora-aarch64
-ghcr.io/moryoav/ha-gwm-ora-armv7
-```
-
-The add-on `config.yaml` points at `ghcr.io/moryoav/ha-gwm-ora-{arch}`.
 
 ## Disclaimer
 

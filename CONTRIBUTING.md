@@ -60,7 +60,7 @@ src/GwmOra.Addon/               .NET add-on service
 src/LibGwmApi/                  GWM API client adapted from ora2mqtt behavior
 custom_components/gwm_ora/      Home Assistant custom integration
 tests/                          .NET and Python tests
-.github/workflows/              CI, image build, and release workflows
+.github/workflows/              CI and release workflows
 ```
 
 For local Home Assistant testing, install or copy the integration into:
@@ -153,7 +153,7 @@ HACS uses GitHub releases for update detection. Release pull requests should:
 - Update `custom_components/gwm_ora/manifest.json`.
 - Push a `vX.Y.Z` tag after the release commit lands.
 
-The release workflow creates the GitHub release from the matching changelog section, and the image workflow publishes versioned add-on images.
+The release workflow creates the GitHub release from the matching changelog section. The add-on is built locally by Home Assistant Supervisor from the repository Dockerfile.
 
 ## Code of Conduct
 
