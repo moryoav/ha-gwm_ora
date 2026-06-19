@@ -7,11 +7,12 @@ from dataclasses import dataclass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import GwmOraApiAuthError, GwmOraApiClient, GwmOraApiError, GwmOraApiUnavailable
-from .const import CONF_TOKEN, PLATFORMS
+from .const import CONF_TOKEN, DOMAIN, PLATFORMS
 from .coordinator import GwmOraDataUpdateCoordinator
 
 
@@ -39,11 +40,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: GwmOraConfigEntry) -> bo
 
     try:
         await coordinator.async_config_entry_first_refresh()
-    except GwmOraApiAuthError:
+    except (ConfigEntryAuthFailed, GwmOraApiAuthError):
+        ir.async_create_issue(
+            hass,
+            DOMAIN,
+            "addon_auth_failed",
+            is_fixable=False,
+            severity=ir.IssueSeverity.ERROR,
+            translation_key="addon_auth_failed",
+        )
         raise
     except (GwmOraApiUnavailable, GwmOraApiError) as err:
         raise ConfigEntryNotReady(str(err)) from err
 
+    ir.async_delete_issue(hass, DOMAIN, "addon_auth_failed")
     entry.runtime_data = GwmOraRuntimeData(api=api, coordinator=coordinator)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

@@ -10,7 +10,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import GwmOraConfigEntry
-from .entity import GwmOraEntity
+from .entity import GwmOraEntity, setup_vehicle_entities
+
+PARALLEL_UPDATES = 0
 
 
 async def async_setup_entry(
@@ -19,10 +21,12 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up GWM ORA device trackers."""
-    coordinator = entry.runtime_data.coordinator
-    async_add_entities(
-        GwmOraDeviceTracker(coordinator, vehicle["vin"])
-        for vehicle in coordinator.vehicles
+    setup_vehicle_entities(
+        entry,
+        async_add_entities,
+        lambda vehicle: (
+            GwmOraDeviceTracker(entry.runtime_data.coordinator, vehicle["vin"]),
+        ),
     )
 
 

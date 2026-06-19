@@ -10,7 +10,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import GwmOraConfigEntry
-from .entity import GwmOraEntity
+from .entity import GwmOraEntity, async_call_addon_api, setup_vehicle_entities
+
+PARALLEL_UPDATES = 0
 
 
 async def async_setup_entry(
@@ -19,10 +21,12 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up GWM ORA climate entities."""
-    coordinator = entry.runtime_data.coordinator
-    async_add_entities(
-        GwmOraClimate(entry.runtime_data.api, coordinator, vehicle["vin"])
-        for vehicle in coordinator.vehicles
+    setup_vehicle_entities(
+        entry,
+        async_add_entities,
+        lambda vehicle: (
+            GwmOraClimate(entry.runtime_data.api, entry.runtime_data.coordinator, vehicle["vin"]),
+        ),
     )
 
 
@@ -30,7 +34,6 @@ class GwmOraClimate(GwmOraEntity, ClimateEntity):
     """GWM ORA A/C climate control."""
 
     _attr_translation_key = "ac_climate"
-    _attr_icon = "mdi:air-conditioner"
     _attr_hvac_modes = [HVACMode.OFF, HVACMode.COOL]
     _attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
@@ -85,12 +88,12 @@ class GwmOraClimate(GwmOraEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set HVAC mode."""
         mode = "cool" if hvac_mode == HVACMode.COOL else "off"
-        await self._api.async_set_climate(self.vin, mode=mode)
+        await async_call_addon_api(self._api.async_set_climate(self.vin, mode=mode))
         await self.coordinator.async_request_refresh()
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is None:
             return
-        await self._api.async_set_climate(self.vin, temperature=int(temperature))
+        await async_call_addon_api(self._api.async_set_climate(self.vin, temperature=int(temperature)))
         await self.coordinator.async_request_refresh()

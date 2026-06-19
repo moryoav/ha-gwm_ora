@@ -6,6 +6,24 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-19
+
+### Added
+
+- Added Home Assistant Integration Quality Scale tracking with `custom_components/gwm_ora/quality_scale.yaml`.
+- Added Gold-track documentation for supported devices, data updates, diagnostics, troubleshooting, use cases, examples, known limitations, and removal.
+- Added GitHub community health files: Code of Conduct, Contributing, Security, Support, issue forms, and pull request template.
+- Added reconfigure and reauthentication flows for manual/development add-on API connection updates.
+- Added Home Assistant repair issue creation when the add-on API token is rejected.
+- Added dynamic entity creation for vehicles discovered after initial setup.
+- Added entity icon translations and disabled-by-default diagnostic timestamp/command-status entities.
+
+### Changed
+
+- Distinguished add-on authentication failures from remote-command permission failures.
+- Wrapped remote command entity failures in translated Home Assistant errors.
+- Declared platform parallel update behavior for all integration platforms.
+
 ## [0.1.0] - 2026-06-19
 
 ### Added

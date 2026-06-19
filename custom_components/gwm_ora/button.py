@@ -7,7 +7,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import GwmOraConfigEntry
-from .entity import GwmOraEntity
+from .entity import GwmOraEntity, async_call_addon_api, setup_vehicle_entities
+
+PARALLEL_UPDATES = 0
 
 
 async def async_setup_entry(
@@ -16,10 +18,12 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up GWM ORA buttons."""
-    coordinator = entry.runtime_data.coordinator
-    async_add_entities(
-        GwmOraCloseWindowsButton(entry.runtime_data.api, coordinator, vehicle["vin"])
-        for vehicle in coordinator.vehicles
+    setup_vehicle_entities(
+        entry,
+        async_add_entities,
+        lambda vehicle: (
+            GwmOraCloseWindowsButton(entry.runtime_data.api, entry.runtime_data.coordinator, vehicle["vin"]),
+        ),
     )
 
 
@@ -27,7 +31,6 @@ class GwmOraCloseWindowsButton(GwmOraEntity, ButtonEntity):
     """Button that closes all windows."""
 
     _attr_translation_key = "close_windows"
-    _attr_icon = "mdi:window-closed-variant"
 
     def __init__(self, api, coordinator, vin: str) -> None:
         super().__init__(coordinator, vin)
@@ -41,5 +44,5 @@ class GwmOraCloseWindowsButton(GwmOraEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Close windows."""
-        await self._api.async_close_windows(self.vin)
+        await async_call_addon_api(self._api.async_close_windows(self.vin))
         await self.coordinator.async_request_refresh()

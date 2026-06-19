@@ -10,11 +10,14 @@ from typing import Any
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.const import PERCENTAGE, UnitOfLength, UnitOfPressure, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import dt as dt_util
 
 from . import GwmOraConfigEntry
-from .entity import GwmOraEntity, vehicle_value
+from .entity import GwmOraEntity, setup_vehicle_entities, vehicle_value
+
+PARALLEL_UPDATES = 0
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -61,7 +64,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        icon="mdi:counter",
         value_fn=_value("odometer_km"),
     ),
     GwmOraSensorEntityDescription(
@@ -77,7 +79,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         translation_key="soce",
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:battery-heart-variant",
         value_fn=_value("soce"),
     ),
     GwmOraSensorEntityDescription(
@@ -94,7 +95,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRESSURE,
         native_unit_of_measurement=UnitOfPressure.KPA,
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:car-tire-alert",
         value_fn=_value("tire_pressure_front_left_kpa"),
     ),
     GwmOraSensorEntityDescription(
@@ -103,7 +103,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRESSURE,
         native_unit_of_measurement=UnitOfPressure.KPA,
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:car-tire-alert",
         value_fn=_value("tire_pressure_front_right_kpa"),
     ),
     GwmOraSensorEntityDescription(
@@ -112,7 +111,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRESSURE,
         native_unit_of_measurement=UnitOfPressure.KPA,
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:car-tire-alert",
         value_fn=_value("tire_pressure_rear_left_kpa"),
     ),
     GwmOraSensorEntityDescription(
@@ -121,7 +119,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PRESSURE,
         native_unit_of_measurement=UnitOfPressure.KPA,
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:car-tire-alert",
         value_fn=_value("tire_pressure_rear_right_kpa"),
     ),
     GwmOraSensorEntityDescription(
@@ -160,21 +157,23 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         key="acquisition_time",
         translation_key="acquisition_time",
         device_class=SensorDeviceClass.TIMESTAMP,
-        entity_category="diagnostic",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         value_fn=_timestamp("acquisition_time"),
     ),
     GwmOraSensorEntityDescription(
         key="update_time",
         translation_key="update_time",
         device_class=SensorDeviceClass.TIMESTAMP,
-        entity_category="diagnostic",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         value_fn=_timestamp("update_time"),
     ),
     GwmOraSensorEntityDescription(
         key="command_status",
         translation_key="command_status",
-        icon="mdi:progress-clock",
-        entity_category="diagnostic",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         value_fn=lambda vehicle: None if vehicle is None else vehicle.get("command_status"),
     ),
 )
@@ -186,11 +185,13 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up GWM ORA sensors."""
-    coordinator = entry.runtime_data.coordinator
-    async_add_entities(
-        GwmOraSensor(coordinator, vehicle["vin"], description)
-        for vehicle in coordinator.vehicles
-        for description in SENSORS
+    setup_vehicle_entities(
+        entry,
+        async_add_entities,
+        lambda vehicle: (
+            GwmOraSensor(entry.runtime_data.coordinator, vehicle["vin"], description)
+            for description in SENSORS
+        ),
     )
 
 

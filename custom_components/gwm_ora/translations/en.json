@@ -8,6 +8,39 @@
           "host": "Host",
           "port": "Port",
           "token": "API token"
+        },
+        "data_description": {
+          "host": "Internal add-on hostname or development host.",
+          "port": "Add-on API port. The packaged add-on uses 8099.",
+          "token": "Generated add-on API token. GWM account credentials never go here."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure GWM ORA add-on",
+        "description": "Update the add-on API connection used by this integration. For normal Home Assistant add-on installs, restarting the add-on should rediscover and update these values automatically.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token"
+        },
+        "data_description": {
+          "host": "Internal add-on hostname or development host.",
+          "port": "Add-on API port. The packaged add-on uses 8099.",
+          "token": "Generated add-on API token. GWM account credentials never go here."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnect GWM ORA add-on",
+        "description": "The add-on rejected the stored API token. Restart the add-on first; if this is a development install, enter the updated host, port, and token.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token"
+        },
+        "data_description": {
+          "host": "Internal add-on hostname or development host.",
+          "port": "Add-on API port. The packaged add-on uses 8099.",
+          "token": "Generated add-on API token. GWM account credentials never go here."
         }
       },
       "hassio_confirm": {
@@ -21,6 +54,26 @@
     },
     "abort": {
       "already_configured": "GWM ORA is already configured."
+    }
+  },
+  "exceptions": {
+    "addon_auth_failed": {
+      "message": "The GWM ORA add-on rejected the stored API token."
+    },
+    "addon_request_failed": {
+      "message": "The GWM ORA add-on could not complete the request."
+    },
+    "addon_unavailable": {
+      "message": "The GWM ORA add-on is not reachable."
+    },
+    "remote_command_unavailable": {
+      "message": "Remote commands are unavailable. Enable remote commands and configure the security PIN in the add-on."
+    }
+  },
+  "issues": {
+    "addon_auth_failed": {
+      "title": "GWM ORA add-on authentication failed",
+      "description": "The integration can reach the GWM ORA add-on, but the add-on rejected the stored API token. Restart the add-on first so Supervisor can rediscover it. For development or non-Supervisor installs, use Reconfigure and enter the current add-on API token."
     }
   },
   "entity": {

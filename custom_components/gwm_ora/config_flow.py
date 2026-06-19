@@ -15,6 +15,29 @@ from .api import GwmOraApiAuthError, GwmOraApiClient, GwmOraApiError, GwmOraApiU
 from .const import CONF_API_VERSION, CONF_SLUG, CONF_TOKEN, DEFAULT_NAME, DEFAULT_PORT, DOMAIN
 
 
+def _manual_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
+    """Return the manual add-on API schema."""
+    defaults = defaults or {}
+    return vol.Schema(
+        {
+            vol.Required(CONF_HOST, default=defaults.get(CONF_HOST, "")): str,
+            vol.Required(CONF_PORT, default=defaults.get(CONF_PORT, DEFAULT_PORT)): int,
+            vol.Required(CONF_TOKEN, default=defaults.get(CONF_TOKEN, "")): str,
+        }
+    )
+
+
+def _manual_data(user_input: dict[str, Any], *, slug: str = "manual") -> dict[str, Any]:
+    """Return normalized config entry data for a manually supplied add-on API."""
+    return {
+        CONF_HOST: user_input[CONF_HOST],
+        CONF_PORT: user_input[CONF_PORT],
+        CONF_TOKEN: user_input[CONF_TOKEN],
+        CONF_API_VERSION: 1,
+        CONF_SLUG: slug,
+    }
+
+
 class GwmOraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a GWM ORA config flow."""
 
@@ -70,13 +93,7 @@ class GwmOraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            data = {
-                CONF_HOST: user_input[CONF_HOST],
-                CONF_PORT: user_input[CONF_PORT],
-                CONF_TOKEN: user_input[CONF_TOKEN],
-                CONF_API_VERSION: 1,
-                CONF_SLUG: "manual",
-            }
+            data = _manual_data(user_input)
             errors["base"] = await self._async_validate(data)
             if not errors["base"]:
                 await self.async_set_unique_id(f"{data[CONF_HOST]}:{data[CONF_PORT]}")
@@ -85,13 +102,54 @@ class GwmOraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-                    vol.Required(CONF_TOKEN): str,
-                }
-            ),
+            data_schema=_manual_schema(),
+            errors=errors,
+        )
+
+    async def async_step_reconfigure(
+        self,
+        user_input: dict[str, Any] | None = None,
+    ) -> ConfigFlowResult:
+        """Handle user-triggered reconfiguration."""
+        entry = self._get_reconfigure_entry()
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            data = _manual_data(user_input, slug=entry.data.get(CONF_SLUG, "manual"))
+            errors["base"] = await self._async_validate(data)
+            if not errors["base"]:
+                return self.async_update_reload_and_abort(entry, data_updates=data)
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=_manual_schema(dict(entry.data)),
+            errors=errors,
+        )
+
+    async def async_step_reauth(
+        self,
+        entry_data: dict[str, Any],
+    ) -> ConfigFlowResult:
+        """Handle an add-on API authentication failure."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self,
+        user_input: dict[str, Any] | None = None,
+    ) -> ConfigFlowResult:
+        """Confirm updated add-on API connection details."""
+        entry = self._get_reauth_entry()
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            data = _manual_data(user_input, slug=entry.data.get(CONF_SLUG, "manual"))
+            errors["base"] = await self._async_validate(data)
+            if not errors["base"]:
+                return self.async_update_reload_and_abort(entry, data_updates=data)
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=_manual_schema(dict(entry.data)),
             errors=errors,
         )
 

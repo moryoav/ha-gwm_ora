@@ -1,0 +1,128 @@
+name: Bug report
+description: Report a reproducible problem with GWM ORA for Home Assistant.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Remove GWM credentials, add-on API tokens, refresh tokens, security PINs, VINs, exact vehicle locations, private URLs, and personal Home Assistant configuration before submitting.
+
+  - type: input
+    id: version
+    attributes:
+      label: GWM ORA for Home Assistant version
+      description: Include the integration/add-on version or commit if known.
+      placeholder: "Example: 0.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: home_assistant_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "Example: 2026.6.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: Installation method
+      options:
+        - HACS custom integration and add-on repository
+        - Manual custom integration install
+        - Development branch
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected_area
+    attributes:
+      label: Affected area
+      options:
+        - Add-on service
+        - GWM API client
+        - Custom integration
+        - Config flow or setup
+        - Entities or device model
+        - Diagnostics or repairs
+        - Remote commands
+        - Add-on packaging or images
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Architecture
+      options:
+        - amd64
+        - aarch64
+        - armv7
+        - Other
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: vehicle
+    attributes:
+      label: Vehicle and region
+      description: Share only broad details. Do not include VIN.
+      placeholder: "Example: ORA 03, Germany"
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps that trigger the issue.
+      placeholder: |
+        1. Start add-on...
+        2. Add integration...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste relevant Home Assistant or add-on logs after removing sensitive information.
+      render: text
+
+  - type: textarea
+    id: extra_context
+    attributes:
+      label: Additional context
+      description: Add screenshots, example YAML, or anything else that helps explain the issue.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I removed GWM credentials, add-on API tokens, refresh tokens, security PINs, VINs, exact vehicle locations, private URLs, and personal Home Assistant configuration.
+          required: true
+        - label: I checked the existing issues for a similar report.
+          required: true

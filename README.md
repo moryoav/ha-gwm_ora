@@ -141,6 +141,134 @@ Use the button above after Home Assistant restarts. The integration should disco
 
 Climate, lock, and button entities are unavailable until remote commands are enabled and a security PIN is configured in the add-on.
 
+## Supported Vehicles
+
+The integration is designed for GWM ORA vehicles that use the same GWM cloud API behavior as the original `ora2mqtt` project. Initial mapping targets ORA vehicles such as ORA 03/Funky Cat style models exposed by the GWM mobile app.
+
+Known constraints:
+
+- Regional GWM backends can differ.
+- Some item codes may be absent on some vehicle model years or trims.
+- Remote commands depend on the official app account, region, vehicle support, security PIN, and current vehicle/cloud state.
+- Firmware/software updates are not exposed by this integration because the GWM cloud API behavior used here does not provide a safe update path.
+
+## Data Updates
+
+The add-on polls GWM cloud data on its own schedule using `poll_interval_seconds`. The integration polls the add-on's cached vehicle snapshot every 30 seconds and does not trigger a fresh GWM cloud request for every Home Assistant refresh.
+
+Use the add-on option to control cloud polling frequency:
+
+```yaml
+poll_interval_seconds: 60
+```
+
+Lower values make Home Assistant feel fresher but can increase GWM cloud traffic. Keep the interval conservative unless you have a specific reason to change it.
+
+## Diagnostics
+
+Home Assistant diagnostics are available from the integration entry. Diagnostics include config-entry metadata and the latest cached vehicle snapshot, with the add-on API token redacted.
+
+Before sharing diagnostics publicly, still review them for VINs, precise locations, raw item codes, timestamps, or anything else you consider private.
+
+## Troubleshooting
+
+### Add-on Is Not Discovered
+
+- Confirm the add-on is installed and started.
+- Check the add-on log for login or options errors.
+- Restart the add-on to publish Supervisor discovery again.
+- Restart Home Assistant if the integration was installed after the add-on had already started.
+
+### Integration Cannot Connect
+
+- Confirm the add-on health endpoint is running in the add-on log.
+- Confirm the integration was discovered by Supervisor rather than manually pointed at the wrong host or port.
+- For development installs, reconfigure the integration with the current host, port, and generated API token.
+
+### API Token Rejected
+
+Restart the add-on first. The add-on persists its generated API token under `/data`; if the state file changes, Supervisor discovery should publish the new token and the integration can update from rediscovery. Development installs can use the integration's reconfigure flow.
+
+### GWM Login Fails
+
+- Verify the same account works in the official GWM app.
+- Complete any SMS, e-mail, region, or account verification in the official app first.
+- Confirm the add-on `country`, `username`, and `password` options.
+- Increase log level temporarily if needed.
+
+### Remote Commands Are Unavailable
+
+Remote commands are intentionally disabled unless both are true:
+
+- `enable_remote_commands: true`
+- `security_pin` is configured in the add-on
+
+After changing either option, restart the add-on and reload the integration.
+
+### Entities Are Missing or Unavailable
+
+- Some entities depend on values returned by your vehicle and region.
+- Newly discovered vehicles are added automatically after the coordinator sees them.
+- If a previously known VIN disappears from the GWM cloud response, existing entities remain but become unavailable instead of being deleted immediately.
+
+## Example Automations
+
+Notify when the charge plug is connected but charging is not active:
+
+```yaml
+alias: ORA plugged in but not charging
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.ora_charge_plug
+    to: "on"
+conditions:
+  - condition: state
+    entity_id: binary_sensor.ora_charging_active
+    state: "off"
+actions:
+  - action: notify.mobile_app_phone
+    data:
+      message: "The ORA is plugged in but not charging."
+```
+
+Pre-cool the cabin when remote commands are explicitly enabled:
+
+```yaml
+alias: ORA pre-cool before commute
+triggers:
+  - trigger: time
+    at: "07:20:00"
+conditions:
+  - condition: numeric_state
+    entity_id: sensor.ora_soc
+    above: 30
+actions:
+  - action: climate.set_temperature
+    target:
+      entity_id: climate.ora_a_c_climate
+    data:
+      temperature: 22
+      hvac_mode: cool
+```
+
+Remote command automations should be tested manually first and used only when the vehicle is parked in a safe location.
+
+## Removal
+
+To remove the integration:
+
+1. Delete the `GWM ORA` integration entry from Home Assistant.
+2. Stop and uninstall the `GWM ORA` add-on.
+3. Remove this repository from the add-on store if you no longer need it.
+4. Remove the custom integration from HACS or delete `/config/custom_components/gwm_ora`.
+5. Restart Home Assistant.
+
+The add-on stores generated state under its `/data` directory. Removing the add-on removes that stored token state.
+
+## Quality Scale
+
+This repository tracks Home Assistant Integration Quality Scale progress in `custom_components/gwm_ora/quality_scale.yaml` and [docs/QUALITY_SCALE.md](docs/QUALITY_SCALE.md). The goal is Gold-level user experience, with remaining work called out honestly for custom-integration coverage and strict typing.
+
 ## Development
 
 The add-on targets .NET 10 LTS. Local .NET builds require a .NET 10 SDK.

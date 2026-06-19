@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Callable, Iterable
+from typing import TYPE_CHECKING, Any
 
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .api import GwmOraApiAuthError, GwmOraApiError, GwmOraApiForbidden, GwmOraApiUnavailable
 from .const import DOMAIN
 from .coordinator import GwmOraDataUpdateCoordinator
+
+if TYPE_CHECKING:
+    from . import GwmOraConfigEntry
 
 
 class GwmOraEntity(CoordinatorEntity[GwmOraDataUpdateCoordinator]):
@@ -55,3 +62,53 @@ def vehicle_value(vehicle: dict[str, Any] | None, key: str) -> Any:
     if vehicle is None:
         return None
     return (vehicle.get("values") or {}).get(key)
+
+
+def setup_vehicle_entities(
+    entry: GwmOraConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+    factory: Callable[[dict[str, Any]], Iterable[GwmOraEntity]],
+) -> None:
+    """Add entities for all current and newly discovered vehicles."""
+    coordinator = entry.runtime_data.coordinator
+    known_vins: set[str] = set()
+
+    def add_new_vehicle_entities() -> None:
+        entities: list[GwmOraEntity] = []
+        for vehicle in coordinator.vehicles:
+            vin = vehicle.get("vin")
+            if not vin or vin in known_vins:
+                continue
+            known_vins.add(vin)
+            entities.extend(factory(vehicle))
+        if entities:
+            async_add_entities(entities)
+
+    add_new_vehicle_entities()
+    entry.async_on_unload(coordinator.async_add_listener(add_new_vehicle_entities))
+
+
+async def async_call_addon_api(call) -> None:
+    """Call the add-on API and raise translated Home Assistant errors."""
+    try:
+        await call
+    except GwmOraApiAuthError as err:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key="addon_auth_failed",
+        ) from err
+    except GwmOraApiForbidden as err:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key="remote_command_unavailable",
+        ) from err
+    except GwmOraApiUnavailable as err:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key="addon_unavailable",
+        ) from err
+    except GwmOraApiError as err:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key="addon_request_failed",
+        ) from err

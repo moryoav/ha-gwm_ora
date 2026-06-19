@@ -1,0 +1,53 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "ac_active": {
+        "default": "mdi:air-conditioner"
+      },
+      "air_circulation": {
+        "default": "mdi:air-filter"
+      },
+      "front_defroster": {
+        "default": "mdi:car-defrost-front"
+      }
+    },
+    "button": {
+      "close_windows": {
+        "default": "mdi:window-closed-variant"
+      }
+    },
+    "climate": {
+      "ac_climate": {
+        "default": "mdi:air-conditioner"
+      }
+    },
+    "lock": {
+      "door_lock": {
+        "default": "mdi:car-door-lock"
+      }
+    },
+    "sensor": {
+      "command_status": {
+        "default": "mdi:progress-clock"
+      },
+      "odometer": {
+        "default": "mdi:counter"
+      },
+      "soce": {
+        "default": "mdi:battery-heart-variant"
+      },
+      "tire_pressure_front_left": {
+        "default": "mdi:car-tire-alert"
+      },
+      "tire_pressure_front_right": {
+        "default": "mdi:car-tire-alert"
+      },
+      "tire_pressure_rear_left": {
+        "default": "mdi:car-tire-alert"
+      },
+      "tire_pressure_rear_right": {
+        "default": "mdi:car-tire-alert"
+      }
+    }
+  }
+}

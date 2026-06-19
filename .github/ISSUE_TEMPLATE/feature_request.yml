@@ -1,0 +1,74 @@
+name: Feature request
+description: Suggest an improvement or new capability.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please describe the Home Assistant workflow you want to make better.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem should this feature solve?
+      placeholder: "I want to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior you would like to see.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected_area
+    attributes:
+      label: Area of the project
+      options:
+        - Add-on service
+        - GWM API client
+        - Custom integration
+        - Config flow or setup
+        - Entities or device model
+        - Diagnostics or repairs
+        - Remote commands
+        - Add-on packaging or images
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: vehicle
+    attributes:
+      label: Vehicle and region
+      description: Share broad model/region details if relevant. Do not include VIN.
+      placeholder: "Example: ORA 03, Germany"
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Are there current workarounds or other designs you considered?
+
+  - type: textarea
+    id: safety
+    attributes:
+      label: Security, privacy, and vehicle-safety considerations
+      description: Note any impact on authentication, token storage, diagnostics, vehicle location, remote commands, or add-on networking.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I checked the existing issues for a similar request.
+          required: true
+        - label: This request does not include GWM credentials, add-on API tokens, refresh tokens, security PINs, VINs, exact vehicle locations, private URLs, or personal Home Assistant configuration.
+          required: true

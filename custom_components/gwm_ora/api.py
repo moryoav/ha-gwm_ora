@@ -15,6 +15,10 @@ class GwmOraApiAuthError(GwmOraApiError):
     """Raised when the add-on rejects the stored API token."""
 
 
+class GwmOraApiForbidden(GwmOraApiError):
+    """Raised when the add-on rejects an otherwise authenticated request."""
+
+
 class GwmOraApiUnavailable(GwmOraApiError):
     """Raised when the add-on cannot be reached."""
 
@@ -100,8 +104,10 @@ class GwmOraApiClient:
                 headers=headers,
                 **kwargs,
             ) as response:
-                if response.status in (401, 403):
+                if response.status == 401:
                     raise GwmOraApiAuthError("Add-on API token was rejected")
+                if response.status == 403:
+                    raise GwmOraApiForbidden(await response.text())
                 if response.status >= 400:
                     raise GwmOraApiError(await response.text())
                 return await response.json()

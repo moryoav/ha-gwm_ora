@@ -15,7 +15,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import GwmOraConfigEntry
-from .entity import GwmOraEntity, vehicle_value
+from .entity import GwmOraEntity, setup_vehicle_entities, vehicle_value
+
+PARALLEL_UPDATES = 0
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -45,7 +47,6 @@ BINARY_SENSORS: tuple[GwmOraBinarySensorEntityDescription, ...] = (
     GwmOraBinarySensorEntityDescription(
         key="ac_active",
         translation_key="ac_active",
-        icon="mdi:air-conditioner",
         value_fn=_bool_value("ac_active"),
     ),
     GwmOraBinarySensorEntityDescription(
@@ -83,13 +84,11 @@ BINARY_SENSORS: tuple[GwmOraBinarySensorEntityDescription, ...] = (
     GwmOraBinarySensorEntityDescription(
         key="air_circulation",
         translation_key="air_circulation",
-        icon="mdi:air-filter",
         value_fn=_bool_value("air_circulation"),
     ),
     GwmOraBinarySensorEntityDescription(
         key="front_defroster",
         translation_key="front_defroster",
-        icon="mdi:car-defrost-front",
         value_fn=_bool_value("front_defroster"),
     ),
 )
@@ -101,11 +100,13 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up GWM ORA binary sensors."""
-    coordinator = entry.runtime_data.coordinator
-    async_add_entities(
-        GwmOraBinarySensor(coordinator, vehicle["vin"], description)
-        for vehicle in coordinator.vehicles
-        for description in BINARY_SENSORS
+    setup_vehicle_entities(
+        entry,
+        async_add_entities,
+        lambda vehicle: (
+            GwmOraBinarySensor(entry.runtime_data.coordinator, vehicle["vin"], description)
+            for description in BINARY_SENSORS
+        ),
     )
 
 
