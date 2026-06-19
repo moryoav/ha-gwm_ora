@@ -63,7 +63,7 @@ def test_addon_metadata_declares_internal_api_and_discovery() -> None:
     assert "ingress_port: 8099" in config
     assert "8099/tcp: null" in config
     assert "ASPNETCORE_HTTP_PORTS: \"8099\"" in config
-    assert "GWM_ORA_ADDON_VERSION: \"0.2.9\"" in config
+    assert "GWM_ORA_ADDON_VERSION: \"0.2.10\"" in config
     assert "ASPNETCORE_URLS" not in config
     assert "ENV ASPNETCORE_HTTP_PORTS=8099" in dockerfile
     assert "ENV GWM_ORA_ADDON_VERSION=${BUILD_VERSION}" in dockerfile
@@ -93,3 +93,29 @@ def test_addon_uses_custom_apparmor_profile() -> None:
     assert "/data/** rwk" in profile
     assert "docker_api" not in (ROOT / "addons/gwm_ora/config.yaml").read_text(encoding="utf-8")
     assert "full_access" not in (ROOT / "addons/gwm_ora/config.yaml").read_text(encoding="utf-8")
+
+
+def test_hacs_default_repository_readiness_files_exist() -> None:
+    hacs = json.loads((ROOT / "hacs.json").read_text(encoding="utf-8"))
+    manifest = json.loads((ROOT / "custom_components/gwm_ora/manifest.json").read_text(encoding="utf-8"))
+
+    assert hacs == {
+        "name": "GWM ORA",
+        "homeassistant": "2026.1.0",
+    }
+    assert manifest["documentation"] == "https://github.com/moryoav/ha-gwm_ora"
+    assert manifest["issue_tracker"] == "https://github.com/moryoav/ha-gwm_ora/issues"
+    assert manifest["codeowners"] == ["@moryoav"]
+    assert manifest["version"] == "0.2.10"
+
+    custom_components = [path.name for path in (ROOT / "custom_components").iterdir() if path.is_dir()]
+    assert custom_components == ["gwm_ora"]
+    assert (ROOT / "brand/icon.png").is_file()
+
+    hacs_workflow = (ROOT / ".github/workflows/validate.yml").read_text(encoding="utf-8")
+    hassfest_workflow = (ROOT / ".github/workflows/hassfest.yml").read_text(encoding="utf-8")
+
+    assert "uses: hacs/action@main" in hacs_workflow
+    assert "category: integration" in hacs_workflow
+    assert "ignore:" not in hacs_workflow
+    assert "uses: home-assistant/actions/hassfest@master" in hassfest_workflow

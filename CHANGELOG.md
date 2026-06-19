@@ -6,6 +6,17 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.10] - 2026-06-19
+
+### Added
+
+- Added required HACS validation and Hassfest GitHub Actions for HACS default repository readiness.
+- Added repository quality checks that keep the HACS metadata and validation workflows in place.
+
+### Changed
+
+- Simplified `hacs.json` to supported HACS manifest keys only.
+
 ## [0.2.9] - 2026-06-19
 
 ### Fixed
