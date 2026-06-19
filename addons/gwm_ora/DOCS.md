@@ -16,6 +16,7 @@
 | `country` | yes | Two-letter GWM account region such as `DE` or `GB`. |
 | `username` | yes | GWM account e-mail address. |
 | `password` | yes | GWM account password. |
+| `verification_code` | no | One-time SMS/e-mail verification code requested by GWM for this add-on device. Leave empty unless the add-on log asks for it. |
 | `security_pin` | no | Vehicle remote control PIN from the official app. |
 | `enable_remote_commands` | yes | Enables A/C, lock, unlock, and close-window commands. |
 | `poll_interval_seconds` | yes | GWM cloud polling interval from 30 to 3600 seconds. |
@@ -23,4 +24,4 @@
 
 ## Notes
 
-If GWM requires SMS or e-mail verification during login, use the official app to complete account verification first. The add-on is non-interactive and cannot prompt for a verification code.
+If GWM requires SMS or e-mail verification during login, the add-on requests a code and reports `verification_required` in health. Enter that code in `verification_code`, save, and restart the add-on. After a successful login, the add-on stores GWM tokens under `/data` and tries to clear `verification_code` from the add-on options.

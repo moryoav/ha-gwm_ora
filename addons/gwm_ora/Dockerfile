@@ -25,7 +25,7 @@ COPY openssl.cnf /app/openssl.cnf
 COPY --from=build /src/src/LibGwmApi/Resources/gwm_root.pem /etc/ssl/certs/gwm_root.pem
 COPY --from=build /app/publish ./
 
-ENV ASPNETCORE_URLS=http://0.0.0.0:8099
+ENV ASPNETCORE_HTTP_PORTS=8099
 ENV OPENSSL_CONF=/app/openssl.cnf
 
 EXPOSE 8099

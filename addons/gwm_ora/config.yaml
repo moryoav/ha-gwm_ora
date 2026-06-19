@@ -1,5 +1,5 @@
 name: GWM ORA
-version: "0.2.5"
+version: "0.2.6"
 slug: gwm_ora
 description: Native Home Assistant add-on for GWM ORA vehicles
 url: https://github.com/moryoav/ha-gwm_ora
@@ -11,6 +11,8 @@ startup: services
 boot: auto
 init: false
 hassio_api: true
+discovery:
+  - gwm_ora
 ports:
   8099/tcp: null
 ports_description:
@@ -26,9 +28,10 @@ schema:
   country: "match(^[A-Za-z]{2}$)"
   username: email
   password: password
+  verification_code: password?
   security_pin: password?
   enable_remote_commands: bool
   poll_interval_seconds: "int(30,3600)"
   log_level: "list(trace|debug|info|warning|error)"
 environment:
-  ASPNETCORE_URLS: http://0.0.0.0:8099
+  ASPNETCORE_HTTP_PORTS: "8099"

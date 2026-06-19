@@ -87,7 +87,7 @@ enable_remote_commands: true
 security_pin: "123456"
 ```
 
-If GWM requires SMS or e-mail verification during login, complete that flow once in the official app first. The add-on is non-interactive and cannot prompt for a verification code.
+If GWM requires SMS or e-mail verification, the add-on will request a one-time code and report `verification_required` in its health state. Enter the received code in the optional `verification_code` add-on option, save, and restart the add-on. After successful login, the add-on stores GWM tokens under `/data` and tries to clear `verification_code` from the add-on options.
 
 ### 3. Install the Custom Integration
 
@@ -195,7 +195,7 @@ Restart the add-on first. The add-on persists its generated API token under `/da
 ### GWM Login Fails
 
 - Verify the same account works in the official GWM app.
-- Complete any SMS, e-mail, region, or account verification in the official app first.
+- If the add-on reports `verification_required`, enter the received one-time code in `verification_code`, save, and restart the add-on.
 - Confirm the add-on `country`, `username`, and `password` options.
 - Increase log level temporarily if needed.
 

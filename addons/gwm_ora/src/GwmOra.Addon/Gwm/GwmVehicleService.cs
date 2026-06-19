@@ -11,7 +11,6 @@ public sealed class GwmVehicleService
     private readonly GwmApiClientFactory _clientFactory;
     private readonly GwmAuthenticationService _authentication;
     private readonly RemoteCommandStore _remoteCommandStore;
-    private readonly ILogger<GwmVehicleService> _logger;
     private readonly SemaphoreSlim _refreshGate = new(1, 1);
 
     private VehicleSnapshot[] _vehicles = Array.Empty<VehicleSnapshot>();
@@ -21,20 +20,19 @@ public sealed class GwmVehicleService
         AddonStateStore stateStore,
         GwmApiClientFactory clientFactory,
         GwmAuthenticationService authentication,
-        RemoteCommandStore remoteCommandStore,
-        ILogger<GwmVehicleService> logger)
+        RemoteCommandStore remoteCommandStore)
     {
         _options = options;
         _stateStore = stateStore;
         _clientFactory = clientFactory;
         _authentication = authentication;
         _remoteCommandStore = remoteCommandStore;
-        _logger = logger;
     }
 
     public DateTimeOffset? LastRefresh { get; private set; }
     public string? LastError { get; private set; }
     public bool Authenticated { get; private set; }
+    public bool VerificationRequired { get; private set; }
 
     public VehiclesResponse GetVehicles()
     {
@@ -51,9 +49,10 @@ public sealed class GwmVehicleService
     {
         return new HealthResponse
         {
-            Status = LastError is null ? (LastRefresh.HasValue ? "ok" : "starting") : "error",
+            Status = VerificationRequired ? "verification_required" : LastError is null ? (LastRefresh.HasValue ? "ok" : "starting") : "error",
             Configured = true,
             Authenticated = Authenticated,
+            VerificationRequired = VerificationRequired,
             VehicleCount = _vehicles.Length,
             RemoteCommandsEnabled = _options.EnableRemoteCommands,
             SecurityPinConfigured = !String.IsNullOrWhiteSpace(_options.SecurityPin),
@@ -91,12 +90,20 @@ public sealed class GwmVehicleService
             _vehicles = snapshots.ToArray();
             LastRefresh = DateTimeOffset.UtcNow;
             LastError = null;
+            VerificationRequired = false;
+        }
+        catch (GwmVerificationRequiredException ex)
+        {
+            LastError = ex.Message;
+            Authenticated = false;
+            VerificationRequired = true;
+            throw;
         }
         catch (Exception ex)
         {
             LastError = ex.Message;
             Authenticated = false;
-            _logger.LogError(ex, "Failed to refresh GWM ORA vehicle data");
+            VerificationRequired = false;
             throw;
         }
         finally

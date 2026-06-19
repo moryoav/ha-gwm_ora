@@ -8,6 +8,9 @@ configuration:
   password:
     name: Password
     description: Password used for the GWM ORA account.
+  verification_code:
+    name: Verification code
+    description: Optional one-time SMS or e-mail code requested by GWM when the add-on device is not trusted yet. Leave empty unless the add-on log asks for it.
   security_pin:
     name: Security PIN
     description: Optional 6-digit vehicle remote control PIN from the official app. Required for A/C, lock, unlock, and close-window commands.

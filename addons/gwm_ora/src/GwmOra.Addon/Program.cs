@@ -24,6 +24,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddSingleton(addonOptions);
 builder.Services.AddSingleton(stateStore);
 builder.Services.AddSingleton<GwmApiClientFactory>();
+builder.Services.AddSingleton<SupervisorOptionsService>();
 builder.Services.AddSingleton<GwmAuthenticationService>();
 builder.Services.AddSingleton<RemoteCommandStore>();
 builder.Services.AddSingleton<RemoteCommandService>();

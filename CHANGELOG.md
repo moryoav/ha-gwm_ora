@@ -6,6 +6,18 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-06-19
+
+### Added
+
+- Added optional `verification_code` add-on setup support for GWM SMS/e-mail verification when the add-on device is not trusted yet.
+
+### Fixed
+
+- Declared the `gwm_ora` Supervisor discovery service in add-on metadata so discovery publishing is accepted by Supervisor.
+- Switched the add-on ASP.NET binding configuration from `ASPNETCORE_URLS` to `ASPNETCORE_HTTP_PORTS` to avoid the startup port override warning.
+- Reduced repeated GWM verification failures to a concise action-required warning instead of repeated stack traces.
+
 ## [0.2.5] - 2026-06-19
 
 ### Fixed

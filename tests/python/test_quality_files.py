@@ -46,3 +46,15 @@ def test_addon_schema_avoids_supervisor_string_range_validators() -> None:
 
     assert "country: \"match(^[A-Za-z]{2}$)\"" in config
     assert not re.search(r":\s*[\"']?(?:str|password)\(", config)
+
+
+def test_addon_metadata_declares_internal_api_and_discovery() -> None:
+    config = (ROOT / "addons/gwm_ora/config.yaml").read_text(encoding="utf-8")
+    dockerfile = (ROOT / "addons/gwm_ora/Dockerfile").read_text(encoding="utf-8")
+
+    assert "discovery:\n  - gwm_ora" in config
+    assert "8099/tcp: null" in config
+    assert "ASPNETCORE_HTTP_PORTS: \"8099\"" in config
+    assert "ASPNETCORE_URLS" not in config
+    assert "ENV ASPNETCORE_HTTP_PORTS=8099" in dockerfile
+    assert "ASPNETCORE_URLS" not in dockerfile

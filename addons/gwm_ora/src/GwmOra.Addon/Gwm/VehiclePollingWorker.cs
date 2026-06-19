@@ -7,6 +7,7 @@ public sealed class VehiclePollingWorker : BackgroundService
     private readonly AddonOptions _options;
     private readonly GwmVehicleService _vehicleService;
     private readonly ILogger<VehiclePollingWorker> _logger;
+    private string? _lastFailureKey;
 
     public VehiclePollingWorker(
         AddonOptions options,
@@ -43,13 +44,42 @@ public sealed class VehiclePollingWorker : BackgroundService
         try
         {
             await _vehicleService.RefreshNowAsync(cancellationToken);
+            if (_lastFailureKey is not null)
+            {
+                _logger.LogInformation("GWM ORA polling recovered");
+                _lastFailureKey = null;
+            }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
         }
+        catch (GwmVerificationRequiredException ex)
+        {
+            LogFailure(ex, includeException: false);
+        }
         catch (Exception ex)
         {
+            LogFailure(ex, includeException: true);
+        }
+    }
+
+    private void LogFailure(Exception ex, bool includeException)
+    {
+        var key = $"{ex.GetType().FullName}:{ex.Message}";
+        if (String.Equals(key, _lastFailureKey, StringComparison.Ordinal))
+        {
+            _logger.LogDebug("GWM ORA poll still failing: {Message}", ex.Message);
+            return;
+        }
+
+        _lastFailureKey = key;
+        if (includeException)
+        {
             _logger.LogWarning(ex, "GWM ORA poll failed; the next poll will retry");
+        }
+        else
+        {
+            _logger.LogWarning("GWM ORA poll is waiting for account verification: {Message}", ex.Message);
         }
     }
 }

@@ -5,6 +5,7 @@ public sealed class HealthResponse
     public string Status { get; init; } = "starting";
     public bool Configured { get; init; }
     public bool Authenticated { get; init; }
+    public bool VerificationRequired { get; init; }
     public int VehicleCount { get; init; }
     public bool RemoteCommandsEnabled { get; init; }
     public bool SecurityPinConfigured { get; init; }

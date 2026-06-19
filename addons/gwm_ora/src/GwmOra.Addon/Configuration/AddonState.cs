@@ -27,6 +27,9 @@ public sealed class AddonState
     [JsonPropertyName("discovery_uuid")]
     public string DiscoveryUuid { get; set; } = String.Empty;
 
+    [JsonPropertyName("verification_code_requested_at")]
+    public DateTimeOffset? VerificationCodeRequestedAt { get; set; }
+
     public bool EnsureGenerated()
     {
         var changed = false;

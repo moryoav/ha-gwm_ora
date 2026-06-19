@@ -14,6 +14,9 @@ public sealed class AddonOptions
     [JsonPropertyName("password")]
     public string Password { get; init; } = String.Empty;
 
+    [JsonPropertyName("verification_code")]
+    public string? VerificationCode { get; init; }
+
     [JsonPropertyName("security_pin")]
     public string? SecurityPin { get; init; }
 
@@ -95,6 +98,7 @@ public static class AddonOptionsLoader
             Country = country,
             Username = options.Username.Trim(),
             Password = options.Password,
+            VerificationCode = String.IsNullOrWhiteSpace(options.VerificationCode) ? null : options.VerificationCode.Trim(),
             SecurityPin = String.IsNullOrWhiteSpace(options.SecurityPin) ? null : options.SecurityPin.Trim(),
             EnableRemoteCommands = options.EnableRemoteCommands,
             PollIntervalSeconds = options.PollIntervalSeconds,

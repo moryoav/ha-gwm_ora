@@ -13,6 +13,7 @@ public class AddonOptionsLoaderTests
           "country": "de",
           "username": "owner@example.com",
           "password": "secret",
+          "verification_code": " 1234 ",
           "security_pin": "123456",
           "enable_remote_commands": true,
           "poll_interval_seconds": 120,
@@ -24,6 +25,7 @@ public class AddonOptionsLoaderTests
 
         Assert.Equal("DE", options.Country);
         Assert.Equal("owner@example.com", options.Username);
+        Assert.Equal("1234", options.VerificationCode);
         Assert.True(options.EnableRemoteCommands);
         Assert.Equal(120, options.PollIntervalSeconds);
         Assert.Equal("debug", options.LogLevel);
