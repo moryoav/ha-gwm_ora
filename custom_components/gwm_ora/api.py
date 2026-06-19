@@ -1,0 +1,109 @@
+"""Client for the local GWM ORA add-on API."""
+
+from __future__ import annotations
+
+from typing import Any
+
+import aiohttp
+
+
+class GwmOraApiError(Exception):
+    """Base error for GWM ORA add-on API failures."""
+
+
+class GwmOraApiAuthError(GwmOraApiError):
+    """Raised when the add-on rejects the stored API token."""
+
+
+class GwmOraApiUnavailable(GwmOraApiError):
+    """Raised when the add-on cannot be reached."""
+
+
+class GwmOraApiClient:
+    """Small async client for the add-on's internal HTTP API."""
+
+    def __init__(
+        self,
+        session: aiohttp.ClientSession,
+        host: str,
+        port: int,
+        token: str,
+    ) -> None:
+        self._session = session
+        self._base_url = f"http://{host}:{port}/api/v1"
+        self._token = token
+
+    async def async_health(self) -> dict[str, Any]:
+        """Return add-on health."""
+        return await self._request("GET", "/health")
+
+    async def async_get_vehicles(self) -> dict[str, Any]:
+        """Return cached vehicle snapshots."""
+        return await self._request("GET", "/vehicles")
+
+    async def async_refresh(self) -> dict[str, Any]:
+        """Ask the add-on to refresh immediately."""
+        return await self._request("POST", "/refresh")
+
+    async def async_get_command(self, command_id: str) -> dict[str, Any]:
+        """Return a remote command status."""
+        return await self._request("GET", f"/commands/{command_id}")
+
+    async def async_set_climate(
+        self,
+        vin: str,
+        *,
+        mode: str | None = None,
+        temperature: int | None = None,
+    ) -> dict[str, Any]:
+        """Queue a climate command."""
+        payload: dict[str, Any] = {}
+        if mode is not None:
+            payload["mode"] = mode
+        if temperature is not None:
+            payload["temperature"] = temperature
+        return await self._request(
+            "POST",
+            f"/vehicles/{vin}/commands/climate",
+            json=payload,
+        )
+
+    async def async_lock(self, vin: str, action: str) -> dict[str, Any]:
+        """Queue a door lock command."""
+        return await self._request(
+            "POST",
+            f"/vehicles/{vin}/commands/lock",
+            json={"action": action},
+        )
+
+    async def async_close_windows(self, vin: str) -> dict[str, Any]:
+        """Queue a close-windows command."""
+        return await self._request(
+            "POST",
+            f"/vehicles/{vin}/commands/windows/close",
+            json={},
+        )
+
+    async def _request(
+        self,
+        method: str,
+        path: str,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
+        headers = kwargs.pop("headers", {})
+        headers["Authorization"] = f"Bearer {self._token}"
+
+        try:
+            async with self._session.request(
+                method,
+                f"{self._base_url}{path}",
+                headers=headers,
+                **kwargs,
+            ) as response:
+                if response.status in (401, 403):
+                    raise GwmOraApiAuthError("Add-on API token was rejected")
+                if response.status >= 400:
+                    raise GwmOraApiError(await response.text())
+                return await response.json()
+        except aiohttp.ClientError as err:
+            raise GwmOraApiUnavailable(str(err)) from err

@@ -1,0 +1,24 @@
+configuration:
+  country:
+    name: Country
+    description: Two-letter country code for the GWM account region, for example DE or GB.
+  username:
+    name: Username
+    description: E-mail address used for the GWM ORA account.
+  password:
+    name: Password
+    description: Password used for the GWM ORA account.
+  security_pin:
+    name: Security PIN
+    description: Optional 6-digit vehicle remote control PIN from the official app. Required for A/C, lock, unlock, and close-window commands.
+  enable_remote_commands:
+    name: Enable remote commands
+    description: Allow Home Assistant to send vehicle remote commands through this add-on.
+  poll_interval_seconds:
+    name: Poll interval
+    description: Number of seconds between GWM cloud status polls.
+  log_level:
+    name: Log level
+    description: Minimum log level for the add-on service.
+network:
+  8099/tcp: Internal API for the GWM ORA custom integration.

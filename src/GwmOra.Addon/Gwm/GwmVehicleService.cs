@@ -1,0 +1,110 @@
+using GwmOra.Addon.Configuration;
+using GwmOra.Addon.Models;
+using GwmOra.Addon.RemoteCommands;
+
+namespace GwmOra.Addon.Gwm;
+
+public sealed class GwmVehicleService
+{
+    private readonly AddonOptions _options;
+    private readonly AddonStateStore _stateStore;
+    private readonly GwmApiClientFactory _clientFactory;
+    private readonly GwmAuthenticationService _authentication;
+    private readonly RemoteCommandStore _remoteCommandStore;
+    private readonly ILogger<GwmVehicleService> _logger;
+    private readonly SemaphoreSlim _refreshGate = new(1, 1);
+
+    private VehicleSnapshot[] _vehicles = Array.Empty<VehicleSnapshot>();
+
+    public GwmVehicleService(
+        AddonOptions options,
+        AddonStateStore stateStore,
+        GwmApiClientFactory clientFactory,
+        GwmAuthenticationService authentication,
+        RemoteCommandStore remoteCommandStore,
+        ILogger<GwmVehicleService> logger)
+    {
+        _options = options;
+        _stateStore = stateStore;
+        _clientFactory = clientFactory;
+        _authentication = authentication;
+        _remoteCommandStore = remoteCommandStore;
+        _logger = logger;
+    }
+
+    public DateTimeOffset? LastRefresh { get; private set; }
+    public string? LastError { get; private set; }
+    public bool Authenticated { get; private set; }
+
+    public VehiclesResponse GetVehicles()
+    {
+        return new VehiclesResponse
+        {
+            GeneratedAt = DateTimeOffset.UtcNow,
+            RemoteCommandsEnabled = RemoteCommandsAvailable,
+            SecurityPinConfigured = !String.IsNullOrWhiteSpace(_options.SecurityPin),
+            Vehicles = _vehicles
+        };
+    }
+
+    public HealthResponse GetHealth()
+    {
+        return new HealthResponse
+        {
+            Status = LastError is null ? (LastRefresh.HasValue ? "ok" : "starting") : "error",
+            Configured = true,
+            Authenticated = Authenticated,
+            VehicleCount = _vehicles.Length,
+            RemoteCommandsEnabled = _options.EnableRemoteCommands,
+            SecurityPinConfigured = !String.IsNullOrWhiteSpace(_options.SecurityPin),
+            PollIntervalSeconds = _options.PollIntervalSeconds,
+            LastRefresh = LastRefresh,
+            LastError = LastError
+        };
+    }
+
+    public async Task RefreshNowAsync(CancellationToken cancellationToken)
+    {
+        await _refreshGate.WaitAsync(cancellationToken);
+        try
+        {
+            var client = _clientFactory.Create(_options, _stateStore.State);
+            await _authentication.EnsureAuthenticatedAsync(client, cancellationToken);
+            Authenticated = true;
+
+            var vehicles = await client.AcquireVehiclesAsync(cancellationToken);
+            var snapshots = new List<VehicleSnapshot>(vehicles.Length);
+            foreach (var vehicle in vehicles)
+            {
+                var statusTask = client.GetLastVehicleStatusAsync(vehicle.Vin, cancellationToken);
+                var basicsTask = client.GetVehicleBasicsInfoAsync(vehicle.Vin, cancellationToken);
+                await Task.WhenAll(statusTask, basicsTask);
+
+                snapshots.Add(VehicleSnapshotMapper.Map(
+                    vehicle,
+                    await statusTask,
+                    await basicsTask,
+                    RemoteCommandsAvailable,
+                    _remoteCommandStore.GetLastStatus(vehicle.Vin)));
+            }
+
+            _vehicles = snapshots.ToArray();
+            LastRefresh = DateTimeOffset.UtcNow;
+            LastError = null;
+        }
+        catch (Exception ex)
+        {
+            LastError = ex.Message;
+            Authenticated = false;
+            _logger.LogError(ex, "Failed to refresh GWM ORA vehicle data");
+            throw;
+        }
+        finally
+        {
+            _refreshGate.Release();
+        }
+    }
+
+    private bool RemoteCommandsAvailable =>
+        _options.EnableRemoteCommands && !String.IsNullOrWhiteSpace(_options.SecurityPin);
+}

@@ -1,0 +1,36 @@
+name: GWM ORA
+version: "0.1.0"
+slug: gwm_ora
+description: Native Home Assistant add-on for GWM ORA vehicles
+url: https://github.com/moryoav/ha-gwm_ora
+arch:
+  - amd64
+  - aarch64
+  - armv7
+startup: services
+boot: auto
+init: false
+hassio_api: true
+image: ghcr.io/moryoav/ha-gwm-ora-{arch}
+ports:
+  8099/tcp: null
+ports_description:
+  8099/tcp: Internal API for the GWM ORA custom integration
+options:
+  country: DE
+  username: ""
+  password: ""
+  security_pin: ""
+  enable_remote_commands: false
+  poll_interval_seconds: 60
+  log_level: info
+schema:
+  country: str(2,2)
+  username: email
+  password: password
+  security_pin: password?
+  enable_remote_commands: bool
+  poll_interval_seconds: int(30,3600)
+  log_level: list(trace|debug|info|warning|error)
+environment:
+  ASPNETCORE_URLS: http://0.0.0.0:8099

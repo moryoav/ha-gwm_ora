@@ -1,0 +1,14 @@
+bin/
+obj/
+.vs/
+.vscode/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.pyc
+*.user
+*.suo
+*.tmp
+state.json
+options.json

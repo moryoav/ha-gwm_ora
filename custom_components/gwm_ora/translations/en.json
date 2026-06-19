@@ -1,0 +1,71 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "GWM ORA add-on",
+        "description": "Connect to a running GWM ORA add-on. This is mostly useful for development or non-Supervisor installs.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token"
+        }
+      },
+      "hassio_confirm": {
+        "title": "GWM ORA add-on discovered",
+        "description": "Set up the discovered GWM ORA add-on at {host}."
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the add-on.",
+      "invalid_auth": "The add-on API token was rejected."
+    },
+    "abort": {
+      "already_configured": "GWM ORA is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "soc": { "name": "SOC" },
+      "range": { "name": "Range" },
+      "odometer": { "name": "Odometer" },
+      "remaining_charging_time": { "name": "Remaining charging time" },
+      "soce": { "name": "SOCE" },
+      "interior_temperature": { "name": "Interior temperature" },
+      "tire_pressure_front_left": { "name": "Tire pressure front left" },
+      "tire_pressure_front_right": { "name": "Tire pressure front right" },
+      "tire_pressure_rear_left": { "name": "Tire pressure rear left" },
+      "tire_pressure_rear_right": { "name": "Tire pressure rear right" },
+      "tire_temperature_front_left": { "name": "Tire temperature front left" },
+      "tire_temperature_front_right": { "name": "Tire temperature front right" },
+      "tire_temperature_rear_left": { "name": "Tire temperature rear left" },
+      "tire_temperature_rear_right": { "name": "Tire temperature rear right" },
+      "acquisition_time": { "name": "Acquisition time" },
+      "update_time": { "name": "Update time" },
+      "command_status": { "name": "Remote command status" }
+    },
+    "binary_sensor": {
+      "charging_active": { "name": "Charging active" },
+      "charge_plug": { "name": "Charge plug" },
+      "ac_active": { "name": "A/C active" },
+      "lock_open": { "name": "Lock open" },
+      "window_front_left": { "name": "Window front left" },
+      "window_front_right": { "name": "Window front right" },
+      "window_rear_left": { "name": "Window rear left" },
+      "window_rear_right": { "name": "Window rear right" },
+      "air_circulation": { "name": "Air circulation" },
+      "front_defroster": { "name": "Front defroster" }
+    },
+    "device_tracker": {
+      "location": { "name": "Location" }
+    },
+    "climate": {
+      "ac_climate": { "name": "A/C climate" }
+    },
+    "lock": {
+      "door_lock": { "name": "Door lock" }
+    },
+    "button": {
+      "close_windows": { "name": "Close windows" }
+    }
+  }
+}

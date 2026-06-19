@@ -1,0 +1,126 @@
+"""Binary sensor platform for GWM ORA."""
+
+from __future__ import annotations
+
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
+
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass, BinarySensorEntity, BinarySensorEntityDescription
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from . import GwmOraConfigEntry
+from .entity import GwmOraEntity, vehicle_value
+
+
+@dataclass(frozen=True, kw_only=True)
+class GwmOraBinarySensorEntityDescription(BinarySensorEntityDescription):
+    """Describes a GWM ORA binary sensor."""
+
+    value_fn: Callable[[dict[str, Any] | None], bool | None]
+
+
+def _bool_value(key: str) -> Callable[[dict[str, Any] | None], bool | None]:
+    return lambda vehicle: vehicle_value(vehicle, key)
+
+
+BINARY_SENSORS: tuple[GwmOraBinarySensorEntityDescription, ...] = (
+    GwmOraBinarySensorEntityDescription(
+        key="charging_active",
+        translation_key="charging_active",
+        device_class=BinarySensorDeviceClass.BATTERY_CHARGING,
+        value_fn=_bool_value("charging_active"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="charge_plug_connected",
+        translation_key="charge_plug",
+        device_class=BinarySensorDeviceClass.PLUG,
+        value_fn=_bool_value("charge_plug_connected"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="ac_active",
+        translation_key="ac_active",
+        icon="mdi:air-conditioner",
+        value_fn=_bool_value("ac_active"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="lock_open",
+        translation_key="lock_open",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda vehicle: None
+        if vehicle_value(vehicle, "locked") is None
+        else not vehicle_value(vehicle, "locked"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="window_front_left_open",
+        translation_key="window_front_left",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=_bool_value("window_front_left_open"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="window_front_right_open",
+        translation_key="window_front_right",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=_bool_value("window_front_right_open"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="window_rear_left_open",
+        translation_key="window_rear_left",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=_bool_value("window_rear_left_open"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="window_rear_right_open",
+        translation_key="window_rear_right",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=_bool_value("window_rear_right_open"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="air_circulation",
+        translation_key="air_circulation",
+        icon="mdi:air-filter",
+        value_fn=_bool_value("air_circulation"),
+    ),
+    GwmOraBinarySensorEntityDescription(
+        key="front_defroster",
+        translation_key="front_defroster",
+        icon="mdi:car-defrost-front",
+        value_fn=_bool_value("front_defroster"),
+    ),
+)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: GwmOraConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up GWM ORA binary sensors."""
+    coordinator = entry.runtime_data.coordinator
+    async_add_entities(
+        GwmOraBinarySensor(coordinator, vehicle["vin"], description)
+        for vehicle in coordinator.vehicles
+        for description in BINARY_SENSORS
+    )
+
+
+class GwmOraBinarySensor(GwmOraEntity, BinarySensorEntity):
+    """A GWM ORA binary sensor."""
+
+    entity_description: GwmOraBinarySensorEntityDescription
+
+    def __init__(
+        self,
+        coordinator,
+        vin: str,
+        description: GwmOraBinarySensorEntityDescription,
+    ) -> None:
+        super().__init__(coordinator, vin)
+        self.entity_description = description
+        self._attr_unique_id = f"{vin}_{description.key}"
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if the binary sensor is on."""
+        return self.entity_description.value_fn(self.vehicle)
