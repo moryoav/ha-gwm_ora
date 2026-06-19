@@ -11,7 +11,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import GwmOraApiAuthError, GwmOraApiClient, GwmOraApiError, GwmOraApiUnavailable
-from .const import CONF_TOKEN, DOMAIN, PLATFORMS
+from .const import CONF_TOKEN, PLATFORMS
 from .coordinator import GwmOraDataUpdateCoordinator
 
 
