@@ -40,4 +40,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/ha-gwm-ora-${{ matrix.ha_arch }}:latest
+            ghcr.io/${{ github.repository_owner }}/ha-gwm-ora-${{ matrix.ha_arch }}:${{ github.ref_name }}
             ghcr.io/${{ github.repository_owner }}/ha-gwm-ora-${{ matrix.ha_arch }}:${{ github.sha }}

@@ -157,6 +157,10 @@ Build the add-on image from the repository root:
 docker build -f addons/gwm_ora/Dockerfile .
 ```
 
+## Releases
+
+HACS uses GitHub releases for version detection. For every version, update `CHANGELOG.md`, `addons/gwm_ora/config.yaml`, and `custom_components/gwm_ora/manifest.json`, then push a `vX.Y.Z` tag. The release workflow creates the GitHub release from the matching changelog section.
+
 ## Publishing Images
 
 GitHub Actions builds and publishes architecture-specific images to GitHub Container Registry:
