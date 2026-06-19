@@ -173,7 +173,6 @@ SENSORS: tuple[GwmOraSensorEntityDescription, ...] = (
         key="command_status",
         translation_key="command_status",
         entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False,
         value_fn=lambda vehicle: None if vehicle is None else vehicle.get("command_status"),
     ),
 )

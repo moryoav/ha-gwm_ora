@@ -6,6 +6,20 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.9] - 2026-06-19
+
+### Fixed
+
+- Restored live remote command status progress in Home Assistant by tracking add-on command IDs until terminal state.
+- Updated `/api/v1/vehicles` to overlay the latest remote command status instead of returning only the status captured during the last vehicle cloud poll.
+- Refreshed vehicle data immediately after a completed remote command so A/C, lock, and window state can update without waiting for the normal polling interval.
+
+### Changed
+
+- Enabled the remote command status sensor by default because it is the main progress indicator for long-running GWM commands.
+- Rewrote the README for normal Home Assistant users and removed developer/release-oriented sections.
+- Replaced the README banner with a higher-resolution ORA/GWM image.
+
 ## [0.2.8] - 2026-06-19
 
 ### Added

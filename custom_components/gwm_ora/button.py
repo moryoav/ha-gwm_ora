@@ -44,5 +44,5 @@ class GwmOraCloseWindowsButton(GwmOraEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Close windows."""
-        await async_call_addon_api(self._api.async_close_windows(self.vin))
-        await self.coordinator.async_request_refresh()
+        command = await async_call_addon_api(self._api.async_close_windows(self.vin))
+        self.coordinator.async_track_command(command)

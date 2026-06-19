@@ -27,7 +27,7 @@ def test_sensor_description_keys_cover_v1_contract() -> None:
     assert descriptions["command_status"].entity_category is EntityCategory.DIAGNOSTIC
     assert descriptions["acquisition_time"].entity_registry_enabled_default is False
     assert descriptions["update_time"].entity_registry_enabled_default is False
-    assert descriptions["command_status"].entity_registry_enabled_default is False
+    assert descriptions["command_status"].entity_registry_enabled_default is not False
 
 
 def test_binary_sensor_description_keys_cover_v1_contract() -> None:

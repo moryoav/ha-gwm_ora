@@ -35,7 +35,7 @@ public sealed class VehicleSnapshot
     public VehicleCapabilities Capabilities { get; init; } = new();
     public VehicleValues Values { get; init; } = new();
     public ClimateSnapshot Climate { get; init; } = new();
-    public string CommandStatus { get; init; } = "No remote command has run yet";
+    public string CommandStatus { get; set; } = "No remote command has run yet";
     public IReadOnlyDictionary<string, RawItemSnapshot> RawItems { get; init; } = new Dictionary<string, RawItemSnapshot>();
 }
 

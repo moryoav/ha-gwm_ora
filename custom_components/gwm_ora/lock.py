@@ -49,10 +49,10 @@ class GwmOraDoorLock(GwmOraEntity, LockEntity):
 
     async def async_lock(self, **kwargs) -> None:
         """Lock the vehicle."""
-        await async_call_addon_api(self._api.async_lock(self.vin, "lock"))
-        await self.coordinator.async_request_refresh()
+        command = await async_call_addon_api(self._api.async_lock(self.vin, "lock"))
+        self.coordinator.async_track_command(command)
 
     async def async_unlock(self, **kwargs) -> None:
         """Unlock the vehicle."""
-        await async_call_addon_api(self._api.async_lock(self.vin, "unlock"))
-        await self.coordinator.async_request_refresh()
+        command = await async_call_addon_api(self._api.async_lock(self.vin, "unlock"))
+        self.coordinator.async_track_command(command)

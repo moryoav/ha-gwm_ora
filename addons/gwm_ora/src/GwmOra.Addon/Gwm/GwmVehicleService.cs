@@ -36,6 +36,11 @@ public sealed class GwmVehicleService
 
     public VehiclesResponse GetVehicles()
     {
+        foreach (var vehicle in _vehicles)
+        {
+            vehicle.CommandStatus = _remoteCommandStore.GetLastStatus(vehicle.Vin);
+        }
+
         return new VehiclesResponse
         {
             GeneratedAt = DateTimeOffset.UtcNow,

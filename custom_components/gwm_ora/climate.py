@@ -88,12 +88,12 @@ class GwmOraClimate(GwmOraEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set HVAC mode."""
         mode = "cool" if hvac_mode == HVACMode.COOL else "off"
-        await async_call_addon_api(self._api.async_set_climate(self.vin, mode=mode))
-        await self.coordinator.async_request_refresh()
+        command = await async_call_addon_api(self._api.async_set_climate(self.vin, mode=mode))
+        self.coordinator.async_track_command(command)
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set target temperature."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is None:
             return
-        await async_call_addon_api(self._api.async_set_climate(self.vin, temperature=int(temperature)))
-        await self.coordinator.async_request_refresh()
+        command = await async_call_addon_api(self._api.async_set_climate(self.vin, temperature=int(temperature)))
+        self.coordinator.async_track_command(command)

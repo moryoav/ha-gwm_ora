@@ -88,10 +88,10 @@ def setup_vehicle_entities(
     entry.async_on_unload(coordinator.async_add_listener(add_new_vehicle_entities))
 
 
-async def async_call_addon_api(call) -> None:
+async def async_call_addon_api(call):
     """Call the add-on API and raise translated Home Assistant errors."""
     try:
-        await call
+        return await call
     except GwmOraApiAuthError as err:
         raise HomeAssistantError(
             translation_domain=DOMAIN,
