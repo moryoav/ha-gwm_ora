@@ -75,7 +75,6 @@ Install **GWM ORA**, then configure:
 country: DE
 username: owner@example.com
 password: your-gwm-password
-security_pin: ""
 enable_remote_commands: false
 poll_interval_seconds: 60
 log_level: info

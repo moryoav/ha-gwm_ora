@@ -6,6 +6,13 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-06-19
+
+### Fixed
+
+- Fixed Home Assistant add-on option saving by replacing the `country` schema from `str(2,2)` with a regex validator compatible with Supervisor's current schema validation.
+- Made `security_pin` truly optional in the add-on metadata by removing its default option value while keeping it available in the setup form.
+
 ## [0.2.4] - 2026-06-19
 
 ### Fixed
