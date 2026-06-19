@@ -18,8 +18,33 @@ jobs:
         run: |
           set -euo pipefail
 
+          delete_package() {
+            local package="$1"
+            curl -sS \
+              -X DELETE \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -o delete-package.json \
+              -w "%{http_code}" \
+              "https://api.github.com/users/${OWNER}/packages/container/${package}"
+          }
+
           for package in ha-gwm-ora-amd64 ha-gwm-ora-aarch64 ha-gwm-ora-armv7; do
-            echo "Deleting GHCR versions for ${package}"
+            echo "Deleting GHCR package ${package}"
+            package_status="$(delete_package "${package}")"
+            if [ "${package_status}" = "204" ]; then
+              echo "Deleted ${package}"
+              continue
+            fi
+            if [ "${package_status}" = "404" ]; then
+              echo "${package} is already absent"
+              continue
+            fi
+
+            echo "Package-level delete returned HTTP ${package_status}; falling back to version deletes"
+            cat delete-package.json
+
             while true; do
               status="$(
                 curl -sS \
@@ -50,12 +75,44 @@ jobs:
 
               jq -r '.[].id' versions.json | while read -r version_id; do
                 echo "Deleting ${package} version ${version_id}"
+                version_status="$(
+                  curl -sS \
+                    -X DELETE \
+                    -H "Authorization: Bearer ${GH_TOKEN}" \
+                    -H "Accept: application/vnd.github+json" \
+                    -H "X-GitHub-Api-Version: 2022-11-28" \
+                    -o delete-version.json \
+                    -w "%{http_code}" \
+                    "https://api.github.com/users/${OWNER}/packages/container/${package}/versions/${version_id}"
+                )"
+                if [ "${version_status}" != "204" ]; then
+                  echo "Version delete returned HTTP ${version_status}"
+                  cat delete-version.json
+                fi
+              done
+
+              package_status="$(delete_package "${package}")"
+              if [ "${package_status}" = "204" ]; then
+                echo "Deleted ${package}"
+                break
+              fi
+              if [ "${package_status}" = "404" ]; then
+                echo "${package} is absent"
+                break
+              fi
+
+              next_count="$(
                 curl -fsS \
-                  -X DELETE \
                   -H "Authorization: Bearer ${GH_TOKEN}" \
                   -H "Accept: application/vnd.github+json" \
                   -H "X-GitHub-Api-Version: 2022-11-28" \
-                  "https://api.github.com/users/${OWNER}/packages/container/${package}/versions/${version_id}"
-              done
+                  "https://api.github.com/users/${OWNER}/packages/container/${package}/versions?per_page=100" \
+                  | jq 'length'
+              )"
+              if [ "${next_count}" = "${count}" ]; then
+                echo "No more versions could be deleted for ${package}"
+                cat delete-package.json
+                exit 1
+              fi
             done
           done
