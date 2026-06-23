@@ -55,7 +55,7 @@ security_pin: "123456"
 
 When the add-on logs in for the first time, GWM will send a one-time verification code by SMS or e-mail. Check the phone messages and e-mail inbox for your GWM account, including spam or junk folders. For European accounts, the e-mail will most likely come from `noreply@gwm-eu.com` with the subject `GWM Verification Code`.
 
-![Example GWM Verification Code e-mail](https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/docs/images/gwm-verification-code-email.jpeg)
+<img src="https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/docs/images/gwm-verification-code-email.jpeg" alt="Example GWM Verification Code e-mail" width="320">
 
 After you receive the code:
 
