@@ -16,15 +16,34 @@
 | `country` | yes | Two-letter GWM account region such as `DE` or `GB`. |
 | `username` | yes | GWM account e-mail address. |
 | `password` | yes | GWM account password. |
-| `verification_code` | no | One-time SMS/e-mail verification code requested by GWM for this add-on device. Leave empty unless the add-on log asks for it. |
+| `verification_code` | no | One-time SMS/e-mail verification code sent by GWM during first login or when this add-on device must be trusted. Fill it only after GWM sends a code. |
 | `security_pin` | no | Vehicle remote control PIN from the official app. |
 | `enable_remote_commands` | yes | Enables A/C, lock, unlock, and close-window commands. |
 | `poll_interval_seconds` | yes | GWM cloud polling interval from 30 to 3600 seconds. |
 | `log_level` | yes | One of `trace`, `debug`, `info`, `warning`, or `error`. |
 
-## Notes
+## First-login verification
 
-If GWM requires SMS or e-mail verification during login, the add-on requests a code and reports `verification_required` in health. Enter that code in `verification_code`, save, and restart the add-on. After a successful login, the add-on stores GWM tokens under `/data` and tries to clear `verification_code` from the add-on options.
+When the add-on logs in for the first time, GWM sends a one-time verification code by SMS or e-mail. The add-on log and Web UI will report `verification_required` while it is waiting for that code.
+
+Check the phone messages and e-mail inbox for your GWM account, including spam or junk folders. For European accounts, the e-mail will most likely come from `noreply@gwm-eu.com` with the subject `GWM Verification Code`.
+
+<img src="https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/docs/images/gwm-verification-code-email.jpeg" alt="Example GWM Verification Code e-mail" width="320">
+
+After you receive the code:
+
+1. Open the **GWM ORA** add-on page in Home Assistant.
+2. Go to the **Configuration** tab.
+3. Click **Show unused optional configuration options**.
+4. Fill in **Verification code** (`verification_code`) with the one-time code.
+5. Save the configuration.
+6. Restart the add-on.
+
+After a successful login, the add-on stores GWM tokens under `/data` and tries to clear `verification_code` from the add-on options. The add-on Web UI should then show **Authenticated** as **Yes** and **Verification** as **Not required**.
+
+![GWM ORA add-on authenticated status](https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/docs/images/gwm-addon-authenticated.jpg)
+
+If GWM rejects the code, clear `verification_code`, restart the add-on so it requests a fresh code, then enter the new code and restart again. Verification codes are short-lived, so use the newest code you received.
 
 ## Web UI
 
