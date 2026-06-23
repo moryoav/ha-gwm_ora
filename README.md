@@ -33,23 +33,25 @@ https://github.com/moryoav/ha-gwm_ora
 
 ### 2. Install and Configure the Add-on
 
-Install **GWM ORA**, then fill in:
+Install **GWM ORA**, then fill in the add-on options. Remote commands are recommended, so set `enable_remote_commands` to `true` and provide the remote-control PIN you already defined in the official GWM app:
 
 ```yaml
-country: DE
+country: your-gwm-country-code
 username: owner@example.com
 password: your-gwm-password
-enable_remote_commands: false
+enable_remote_commands: true
+security_pin: "your-official-app-pin"
 poll_interval_seconds: 60
 log_level: info
 ```
 
-For remote controls, also set:
-
-```yaml
-enable_remote_commands: true
-security_pin: "123456"
-```
+- `country`: Two-letter country code for your GWM account, such as `DE` for Germany. It does not have to be Germany; use any country served by the European GWM cloud backend, as described in [regional availability](#supported-vehicles).
+- `username`: E-mail address for your GWM account.
+- `password`: Password for your GWM account.
+- `enable_remote_commands`: Enables A/C, lock, unlock, and close-window controls. `true` is recommended; use `false` only if you want read-only entities.
+- `security_pin`: The remote-control PIN configured in the official GWM app. Setting up that PIN in the official app is a prerequisite for remote commands.
+- `poll_interval_seconds`: How often the add-on refreshes vehicle data from GWM.
+- `log_level`: Add-on logging verbosity.
 
 #### First-login GWM verification
 
