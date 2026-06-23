@@ -6,6 +6,13 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.12] - 2026-06-23
+
+### Changed
+
+- Expanded the README and add-on documentation with detailed GWM verification-code setup instructions and screenshots.
+- Added special thanks to `zivillian/ora2mqtt` for the original trailblazing work that inspired this integration.
+
 ## [0.2.11] - 2026-06-19
 
 ### Fixed
