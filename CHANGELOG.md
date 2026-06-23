@@ -6,6 +6,12 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.13] - 2026-06-23
+
+### Changed
+
+- Prepared a fresh release after passing HACS and Hassfest validation for HACS default repository submission.
+
 ## [0.2.12] - 2026-06-23
 
 ### Changed
