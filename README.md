@@ -216,6 +216,10 @@ This project is unofficial and is not affiliated with or endorsed by Great Wall 
 
 Use at your own risk. You are responsible for validating behavior, protecting credentials, keeping backups, and deciding whether remote commands are appropriate for your vehicle and environment.
 
+## Special Thanks
+
+Special thanks to [zivillian](https://github.com/zivillian) and the [zivillian/ora2mqtt](https://github.com/zivillian/ora2mqtt) project for blazing the trail. Their work uncovered many of the details behind ORA/GWM connectivity and helped inspire the current development of this integration.
+
 [banner]: https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/brand/banner.png
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=flat-square
 [hacs-url]: https://github.com/hacs/integration
