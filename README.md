@@ -109,6 +109,8 @@ This project is designed for GWM ORA vehicles that use the same GWM cloud behavi
 
 Regional GWM services and vehicle firmware can differ, so some entities may be unavailable on some cars.
 
+> **Regional availability:** This integration currently supports GWM accounts that use the European GWM cloud servers. That includes EU countries, Israel, and possibly other markets linked to the same EU backend. It is not expected to work in Russia, the United States, China, or other regions that use different GWM servers and authentication flows. I cannot add or validate support for those regions without help from users there, so developers or technically minded users in non-EU-backed markets are very welcome to get in touch and help gather the details needed for support.
+
 ## Troubleshooting
 
 ### Add-on Is Not Discovered
