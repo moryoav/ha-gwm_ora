@@ -51,7 +51,23 @@ enable_remote_commands: true
 security_pin: "123456"
 ```
 
-If GWM asks for a one-time SMS or e-mail verification code, the add-on log will say so. Enter the code in `verification_code`, save, and restart the add-on.
+#### First-login GWM verification
+
+When the add-on logs in for the first time, GWM will send a one-time verification code by SMS or e-mail. Check the phone messages and e-mail inbox for your GWM account, including spam or junk folders. For European accounts, the e-mail will most likely come from `noreply@gwm-eu.com` with the subject `GWM Verification Code`.
+
+![Example GWM Verification Code e-mail](https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/docs/images/gwm-verification-code-email.jpeg)
+
+After you receive the code:
+
+1. Go back to the **GWM ORA** add-on **Configuration** page.
+2. Click **Show unused optional configuration options**.
+3. Fill in **Verification code** (`verification_code`) with the one-time code.
+4. Save the configuration.
+5. Restart the add-on.
+
+After successful authentication, the add-on Web UI should show **Authenticated** as **Yes** and **Verification** as **Not required**.
+
+![GWM ORA add-on authenticated status](https://raw.githubusercontent.com/moryoav/ha-gwm_ora/main/docs/images/gwm-addon-authenticated.jpg)
 
 ### 3. Install the Integration
 
@@ -130,7 +146,7 @@ Regional GWM services and vehicle firmware can differ, so some entities may be u
 
 - Verify the same account works in the official GWM app.
 - Confirm `country`, `username`, and `password`.
-- If the add-on reports `verification_required`, enter the received one-time code in `verification_code`, save, and restart the add-on.
+- When the add-on reports `verification_required`, follow the [first-login verification steps](#first-login-gwm-verification), enter the received one-time code, and restart the add-on.
 
 ### Remote Commands Are Unavailable
 
