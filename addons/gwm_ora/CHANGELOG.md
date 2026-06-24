@@ -6,6 +6,12 @@ This project follows semantic versioning. HACS uses the latest GitHub release ta
 
 ## [Unreleased]
 
+## [0.2.14] - 2026-06-24
+
+### Fixed
+
+- Fixed the add-on ingress vehicles table so long VIN values wrap without pushing aside SOC, range, and updated columns.
+
 ## [0.2.13] - 2026-06-23
 
 ### Changed

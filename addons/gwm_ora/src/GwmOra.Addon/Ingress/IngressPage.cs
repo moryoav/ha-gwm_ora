@@ -21,7 +21,7 @@ public static class IngressPage
                 return $"""
                     <tr>
                       <td>{WebUtility.HtmlEncode(vehicle.Name)}</td>
-                      <td>{WebUtility.HtmlEncode(vehicle.Vin)}</td>
+                      <td class="vin-cell">{WebUtility.HtmlEncode(vehicle.Vin)}</td>
                       <td>{soc}</td>
                       <td>{range}</td>
                       <td>{updated}</td>
@@ -54,6 +54,7 @@ public static class IngressPage
                 table { width: 100%; border-collapse: collapse; }
                 th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid color-mix(in srgb, CanvasText 12%, transparent); }
                 th { color: color-mix(in srgb, CanvasText 70%, transparent); font-size: 13px; }
+                .vin-cell { word-break: break-all; }
                 .muted { color: color-mix(in srgb, CanvasText 70%, transparent); margin: 0; }
                 code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
               </style>
